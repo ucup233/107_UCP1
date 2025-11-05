@@ -47,3 +47,17 @@ app.put('/hotel/:id', async (req, res) => {
     res.status(500).json({ error: 'Gagal memperbarui data kamar' });
   }
 });
+
+app.delete('/hotel/:id', async (req, res) => {
+  const hotelId = req.params.id;
+  try {
+    const hotel = await db.Hotel.findByPk(hotelId);
+    if (!hotel) return res.status(404).json({ error: 'Kamar tidak ditemukan' });
+
+    await hotel.destroy();
+    res.status(200).json({ message: 'Kamar berhasil dihapus' });
+  } catch (error) {
+    console.error(`DELETE /hotel/${hotelId} error:`, error);
+    res.status(500).json({ error: 'Gagal menghapus data kamar' });
+  }
+});
