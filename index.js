@@ -61,3 +61,16 @@ app.delete('/hotel/:id', async (req, res) => {
     res.status(500).json({ error: 'Gagal menghapus data kamar' });
   }
 });
+
+db.sequelize
+  .authenticate()
+  .then(() => db.sequelize.sync())
+  .then(() => {
+    app.listen(port, () => {
+      console.log(`Server is running on http://localhost:${port}`);
+    });
+  })
+  .catch((err) => {
+    console.error('DB connection or sync error:', err);
+    process.exit(1);
+  });
