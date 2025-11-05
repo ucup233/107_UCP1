@@ -21,3 +21,29 @@ app.post('/hotel', async (req, res) => {
     res.status(500).json({ error: 'Gagal menambahkan kamar', details: error.message });
   }
 });
+
+app.get('/hotel', async (req, res) => {
+  try {
+    const hotels = await db.Hotel.findAll();
+    res.status(200).json(hotels);
+  } catch (error) {
+    console.error('GET /hotel error:', error);
+    res.status(500).json({ error: 'Gagal mengambil data hotel' });
+  }
+});
+
+app.put('/hotel/:id', async (req, res) => {
+  const hotelId = req.params.id;
+  const { tipe_kamar, kapasitas, lantai, fasilitas } = req.body;
+
+  try {
+    const hotel = await db.Hotel.findByPk(hotelId);
+    if (!hotel) return res.status(404).json({ error: 'Kamar tidak ditemukan' });
+
+    await hotel.update({ tipe_kamar, kapasitas, lantai, fasilitas });
+    res.status(200).json(hotel);
+  } catch (error) {
+    console.error(`PUT /hotel/${hotelId} error:`, error);
+    res.status(500).json({ error: 'Gagal memperbarui data kamar' });
+  }
+});
